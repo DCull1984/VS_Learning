@@ -1,5 +1,8 @@
-#define NN_IMPLEMENTATION
+//Code is developed by TSODING DAILY on youtube/twitch and NOT my own code.
+//Thanks to Aleksi for the break down please support the original creator.
 
+#define NN_IMPLEMENTATION
+ 
 #include "nn.h"
 
 float td_xor[] = {
@@ -15,11 +18,26 @@ float td_or[] = {
 	1,1,1,
 };
 
+float td_and[] = {
+	0,0,0,
+	0,1,0,
+	1,0,0,
+	1,1,1,
+};
+
+float td_nand[] = {
+	0,0,1,
+	0,1,1,
+	1,0,1,
+	1,1,0,
+};
+
 int main(void)
 {
 	srand(_time32(0)); //time shows size warning, using forced 32 bit _time32 
 
-	float* td = td_or;
+	//Switch training data
+	float* td = td_nand;
 
 	size_t stride = 3;
 	size_t n = 4;  //sizeof(td) / sizeof(td[0]) / stride; //Gives the amount of samples
@@ -58,6 +76,7 @@ int main(void)
 	
 	//NN_PRINT(nn); //Prints the neural nodes
 
+	//Prints the truth table
 	for (size_t i = 0; i < 2; ++i)
 	{
 		for (size_t j = 0; j < 2; ++j)
