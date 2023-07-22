@@ -75,6 +75,7 @@ void nn_learn(NN nn, NN g, float rate);
 //C part
 #ifdef NN_IMPLEMENTATION
 
+//Matrice Area
 float rand_float(void)
 {
 	return (float)rand() / (float)RAND_MAX;
@@ -192,6 +193,7 @@ void mat_rand(Mat m, float low, float high)
 	}
 }
 
+//Neural Network Area
 NN nn_alloc(size_t* arch, size_t arch_count)
 {
 	NN_ASSERT(arch_count > 0);
