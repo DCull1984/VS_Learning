@@ -15,11 +15,25 @@ float td_or[] = {
 	1,1,1,
 };
 
+float td_and[] = {
+	0,0,0,
+	0,1,0,
+	1,0,0,
+	1,1,1,
+};
+
+float td_nand[] = {
+	0,0,1,
+	0,1,1,
+	1,0,1,
+	1,1,0,
+};
+
 int main(void)
 {
 	srand(_time32(0)); //time shows size warning, using forced 32 bit _time32 
 
-	float* td = td_or;
+	float* td = td_and;
 
 	size_t stride = 3;
 	size_t n = 4;  //sizeof(td) / sizeof(td[0]) / stride; //Gives the amount of samples
@@ -52,8 +66,13 @@ int main(void)
 	//Training the network
 	for (size_t i = 0; i < 25000; ++i)
 	{
+#if 0
 		nn_finite_diff(nn, g, eps, ti, to);
-		nn_learn(nn, g, rate);
+#else
+		nn_backprop(nn, g, ti, to);
+#endif
+		NN_PRINT(g);
+		//nn_learn(nn, g, rate);
 
 	}
 	printf("cost = %f\n", nn_cost(nn, ti, to));

@@ -329,24 +329,49 @@ void nn_backprop(NN nn, NN g, Mat ti, Mat to)
 	for (size_t i = 0; i < n; ++i)
 	{
 		mat_copy(NN_INPUT(nn), mat_row(ti, i));
-		nn_forward(nn);
+		nn_forward(nn); //Forward the copy to the NN
 		for (size_t j = 0; j < to.cols; ++j)
 		{
 			MAT_AT(NN_OUTPUT(g), 0, j) = MAT_AT(NN_OUTPUT(nn), 0, j) - MAT_AT(to, i, j);
 		}
 
+		// Iterate the layers, current activation
 		for (size_t l = nn.count; 1 > 0; --l)
 		{
 			for (size_t j = 0; j < nn.as[l].cols; ++j)
 			{
 				float a = MAT_AT(nn.as[l], 0, j);
 				float da = MAT_AT(g.as[l], 0, j);
-				MAT_AT(g.bs[l - 1], 0, j) += 2 * da * a(1 - a);
+				MAT_AT(g.bs[l - 1], 0, j) += 2 * da * a * (1 - a);
 
 				for (size_t k = 0; k < nn.as[l - 1].cols; ++k)
 				{
-					MAT_AT();
+					// j = weight matrix column
+					// k = weight matrix row
+					float pa = MAT_AT(nn.as[l - 1], 0, k);
+					float w = MAT_AT(nn.ws[l - 1], k, j);
+					MAT_AT(g.ws[l - 1], k, j) += 2 * da * a * (1 - a) * pa;
+					MAT_AT(g.as[l - 1], 0, k) += 2 * da * a * (1 - a) * w;
 				}
+			}
+		}
+	}
+
+	// Iterate the layers back propagation 
+	for (size_t i = 0; i < g.count; ++i)
+	{
+		for (size_t j = 0; j < g.ws[i].rows; ++j)
+		{
+			for (size_t k = 0; k < g.ws[i].cols; ++k)
+			{
+				MAT_AT(g.ws[i], j, k) /= n;
+			}
+		}
+		for (size_t j = 0; j < g.bs[i].rows; ++j)
+		{
+			for (size_t k = 0; k < g.bs[i].cols; ++k)
+			{
+				MAT_AT(g.bs[i], j, k) /= n;
 			}
 		}
 	}
