@@ -33,7 +33,7 @@ int main(void)
 {
 	srand(_time32(0)); //time shows size warning, using forced 32 bit _time32 
 
-	float* td = td_and;
+	float* td = td_xor;
 
 	size_t stride = 3;
 	size_t n = 4;  //sizeof(td) / sizeof(td[0]) / stride; //Gives the amount of samples
@@ -64,15 +64,15 @@ int main(void)
 	printf("cost = %f\n", nn_cost(nn, ti, to));
 
 	//Training the network
-	for (size_t i = 0; i < 25000; ++i)
+	for (size_t i = 0; i < 250000; ++i)
 	{
 #if 0
 		nn_finite_diff(nn, g, eps, ti, to);
 #else
 		nn_backprop(nn, g, ti, to);
 #endif
-		NN_PRINT(g);
-		//nn_learn(nn, g, rate);
+		//NN_PRINT(g);
+		nn_learn(nn, g, rate);
 
 	}
 	printf("cost = %f\n", nn_cost(nn, ti, to));

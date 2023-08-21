@@ -49,6 +49,8 @@ void mat_sig(Mat m);
 void mat_print(Mat m, const char* name, size_t padding);
 #define MAT_PRINT(m) mat_print(m, #m, 0)
 
+// Neural Network
+
 typedef struct {
 	size_t count;
 	Mat* ws;	//Weight
@@ -60,7 +62,7 @@ typedef struct {
 #define NN_OUTPUT(nn) (nn).as[(nn).count]
 
 NN nn_alloc(size_t* arch, size_t arch_count);
-
+void nn_zero(NN nn);
 void nn_print(NN nn, const char* name);
 #define NN_PRINT(nn) nn_print(nn, #nn)
 
@@ -223,6 +225,17 @@ NN nn_alloc(size_t* arch, size_t arch_count)
 	return nn;
 }
 
+void nn_zero(NN nn)
+{
+	for (size_t i = 0; i < nn.count; ++i)
+	{
+		mat_fill(nn.ws[i], 0);
+		mat_fill(nn.bs[i], 0);
+		mat_fill(nn.as[i], 0);
+	}
+	mat_fill(nn.as[nn.count], 0);
+}
+
 void nn_print(NN nn, const char* name)
 {
 	char buf[256];
@@ -320,7 +333,7 @@ void nn_backprop(NN nn, NN g, Mat ti, Mat to)
 	NN_ASSERT(ti.rows == to.rows);
 	size_t n = ti.rows;
 	NN_ASSERT(NN_OUTPUT(nn).cols == to.cols);
-
+	nn_zero(g);
 	// i - current sample
 	// l - current layer
 	// j - current activation
@@ -330,13 +343,14 @@ void nn_backprop(NN nn, NN g, Mat ti, Mat to)
 	{
 		mat_copy(NN_INPUT(nn), mat_row(ti, i));
 		nn_forward(nn); //Forward the copy to the NN
+
 		for (size_t j = 0; j < to.cols; ++j)
 		{
 			MAT_AT(NN_OUTPUT(g), 0, j) = MAT_AT(NN_OUTPUT(nn), 0, j) - MAT_AT(to, i, j);
 		}
 
 		// Iterate the layers, current activation
-		for (size_t l = nn.count; 1 > 0; --l)
+		for (size_t l = nn.count; l > 0; --l)
 		{
 			for (size_t j = 0; j < nn.as[l].cols; ++j)
 			{
