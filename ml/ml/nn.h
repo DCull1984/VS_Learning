@@ -344,6 +344,12 @@ void nn_backprop(NN nn, NN g, Mat ti, Mat to)
 		mat_copy(NN_INPUT(nn), mat_row(ti, i));
 		nn_forward(nn); //Forward the copy to the NN
 
+		//clean gradient as
+		for (size_t j = 0; j <= nn.count; ++j)
+		{
+			mat_fill(g.as[j], 0);
+		}
+
 		for (size_t j = 0; j < to.cols; ++j)
 		{
 			MAT_AT(NN_OUTPUT(g), 0, j) = MAT_AT(NN_OUTPUT(nn), 0, j) - MAT_AT(to, i, j);

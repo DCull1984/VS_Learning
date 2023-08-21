@@ -57,16 +57,17 @@ int main(void)
 	NN g = nn_alloc(arch, ARRAY_LEN(arch));
 	nn_rand(nn, 0, 1);
 
-	//Eps = epsilon the amount the weights will adjust 1e-1f -> 1e-3f. Adjusting this and rate will affect training speed
-	float eps = 1e-1f;
-	float rate = 1e-1f;
+	
+	float rate = 1.f;
 	
 	printf("cost = %f\n", nn_cost(nn, ti, to));
 
 	//Training the network
-	for (size_t i = 0; i < 250000; ++i)
+	for (size_t i = 0; i < 25000; ++i)
 	{
 #if 0
+		//Eps = epsilon the amount the weights will adjust 1e-1f -> 1e-3f. Adjusting this and rate will affect training speed
+		float eps = 1e-1f;
 		nn_finite_diff(nn, g, eps, ti, to);
 #else
 		nn_backprop(nn, g, ti, to);
