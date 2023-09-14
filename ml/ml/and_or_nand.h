@@ -1,4 +1,5 @@
 //#pragma once
+//#include <cstddef>
 //float sigmoid_f(float x)
 //{
 //    return 1.0f / (1.0f + expf(-x));
@@ -88,6 +89,32 @@
 //    result /= train_count;
 //    return result;
 //}
+//
+//////float gcost(float w1, float w2, float b, 
+//        float* dw1, float* dw2, float* db) //Gradient Cost funtion
+//{
+//	*dw1 = 0.0f;
+//	*dw2 = 0.0f;
+//	*db = 0.0f;
+//
+//	size_t n = train_count;
+//	for (size_t i = 0; i < n; ++i)
+//	{
+//		float xi = train[i][0];
+//		float yi = train[i][1];
+//		float zi = train[i][2];
+//		
+//		float ai = sigmoidf(xi * w1 + yi * w2 + b);
+//		float di = 2.0f * (ai - zi) * ai * (1.0f - ai);
+//		
+//		*dw1 += di * xi;
+//		*dw2 += di * yi;
+//		*db += di;
+//	}
+//    *dw1 /= n;
+//    *dw2 /= n;
+//    *db /= n;
+//////}
 //
 //float rand_float(void)
 //{

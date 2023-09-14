@@ -36,8 +36,7 @@ int main(void)
 {
 	srand(_time32(0)); //time shows size warning, using forced 32 bit _time32 
 
-	//Switch training data
-	float* td = td_nand;
+	float* td = td_xor;
 
 	size_t stride = 3;
 	size_t n = 4;  //sizeof(td) / sizeof(td[0]) / stride; //Gives the amount of samples
@@ -61,16 +60,22 @@ int main(void)
 	NN g = nn_alloc(arch, ARRAY_LEN(arch));
 	nn_rand(nn, 0, 1);
 
-	//Eps = epsilon the amount the weights will adjust 1e-1f -> 1e-3f. Adjusting this and rate will affect training speed
-	float eps = 1e-1f;
-	float rate = 1e-1f;
+	
+	float rate = 1.f;
 	
 	printf("cost = %f\n", nn_cost(nn, ti, to));
 
 	//Training the network
 	for (size_t i = 0; i < 25000; ++i)
 	{
+#if 0
+		//Eps = epsilon the amount the weights will adjust 1e-1f -> 1e-3f. Adjusting this and rate will affect training speed
+		float eps = 1e-1f;
 		nn_finite_diff(nn, g, eps, ti, to);
+#else
+		nn_backprop(nn, g, ti, to);
+#endif
+		//NN_PRINT(g);
 		nn_learn(nn, g, rate);
 
 	}
@@ -78,7 +83,8 @@ int main(void)
 	
 	//NN_PRINT(nn); //Prints the neural nodes
 
-	//Prints the truth table
+	printf("<--------------->\n");
+
 	for (size_t i = 0; i < 2; ++i)
 	{
 		for (size_t j = 0; j < 2; ++j)
